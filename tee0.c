@@ -4,7 +4,7 @@
 #define BUF_SIZE 256
 
 
-int main(int argc, char** argv) {
+void tee0(const char* file) {
     int fd = open(argv[1], O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
     if (fd < 0) {
         return 1;
@@ -19,6 +19,9 @@ int main(int argc, char** argv) {
     } while (bytes);
 
     close(fd);
-    return 0;
+}
+
+int main(int argc, char** argv) {
+    teeo(argv[1]);
 }
 

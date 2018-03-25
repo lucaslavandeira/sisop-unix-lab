@@ -1,2 +1,7 @@
 build/*
 
+# IDE files
+
+.idea/
+cmake-*
+*CMakeLists.txt

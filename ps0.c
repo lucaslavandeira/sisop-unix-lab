@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 
 
 void ps0() {
@@ -21,17 +22,29 @@ void ps0() {
             continue;
         }
 
+        int is_pid = 1;
+        int i = 0;
+        char cur = ent->d_name[i++];
+        while (cur) {
+            if (!isdigit(cur)) {
+                is_pid = 0;
+                break;
+            }
+            cur = ent->d_name[i++];
+        }
+
+        if (!is_pid) {
+            ent = readdir(proc_root);
+            continue;
+        }
+
         char comm[17] = {0};
         snprintf(comm, 17, "/proc/%s/comm", ent->d_name);
 
         int fd = open(comm, O_RDONLY);
         if (fd < 0) {
-            if (errno != ENOENT) {
-                perror("Error opening process comm file");
-                return;
-            }
-            ent = readdir(proc_root);
-            continue; // not a pid
+            perror("Error opening process comm file");
+            return;
         }
         char proc_name[256] = {0};
         read(fd, proc_name, 256);

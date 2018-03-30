@@ -41,13 +41,8 @@ void cp1(const char* src, const char* dst) {
             return;
         }
 
-        if (lseek(o_fd, bytes_to_write - 1, SEEK_END) < 0) {
+        if (ftruncate(o_fd, offset + bytes_to_write)) {
             perror("Error seeking to end of o_fd");
-            return;
-        }
-
-        if (write(o_fd, "", 1) < 0) {
-            perror("Error writing dummy byte to o_fd");
             return;
         }
 

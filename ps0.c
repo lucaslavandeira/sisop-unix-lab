@@ -16,7 +16,7 @@ void ps0() {
     }
 
     struct dirent* ent = readdir(proc_root);
-    while (ent) {
+    while (ent && !errno) {
         if (ent->d_type != DT_DIR) {
             ent = readdir(proc_root);
             continue;
@@ -56,6 +56,7 @@ void ps0() {
         int stat_fd = open(stat, O_RDONLY);
         if (stat_fd < 0) {
             perror("Error opening process stat file");
+            close(comm_fd);
             return;
         }
 
@@ -66,11 +67,20 @@ void ps0() {
 
         if (matched != 1) {
             printf("Error running sscanf on stat file\n");
+            close(comm_fd);
+            close(stat_fd);
             return;
         }
 
         printf("%s %c %s", ent->d_name, status, proc_name);
         ent = readdir(proc_root);
+
+        close(comm_fd);
+        close(stat_fd);
+    }
+
+    if (errno) {
+        perror("Error reading /proc dirent");
     }
 }
 

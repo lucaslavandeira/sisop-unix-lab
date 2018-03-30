@@ -1,5 +1,4 @@
-#define _BSD_SOURCE
-
+#define _BSD_SOURCE 
 #include <dirent.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -8,11 +7,17 @@
 #include <ctype.h>
 
 
+#define PROC_PATH_BUF_SIZE 17  // /path/<pid>/stat es a lo sumo 17 bytes
+#define PROC_NAME_BUF_SIZE 256
+
+#define STAT_CONTENT_BUF_SIZE 1024
+
 void ps0() {
     const char* proc = "/proc";
     DIR* proc_root = opendir(proc);
     if (!proc_root) {
         perror("Error opening proc dir");
+        return;
     }
 
     struct dirent* ent = readdir(proc_root);
@@ -38,8 +43,8 @@ void ps0() {
             continue;
         }
 
-        char comm[17] = {0};
-        snprintf(comm, 17, "/proc/%s/comm", ent->d_name);
+        char comm[PROC_PATH_BUF_SIZE] = {0};
+        snprintf(comm, PROC_PATH_BUF_SIZE, "/proc/%s/comm", ent->d_name);
 
         int comm_fd = open(comm, O_RDONLY);
         if (comm_fd < 0) {
@@ -47,11 +52,11 @@ void ps0() {
             return;
         }
 
-        char proc_name[256] = {0};
-        read(comm_fd, proc_name, 256);
+        char proc_name[PROC_NAME_BUF_SIZE] = {0};
+        read(comm_fd, proc_name, PROC_NAME_BUF_SIZE);
 
-        char stat[17] = {0};
-        snprintf(stat, 17, "/proc/%s/stat", ent->d_name);
+        char stat[PROC_PATH_BUF_SIZE] = {0};
+        snprintf(stat, PROC_PATH_BUF_SIZE, "/proc/%s/stat", ent->d_name);
 
         int stat_fd = open(stat, O_RDONLY);
         if (stat_fd < 0) {
@@ -60,8 +65,8 @@ void ps0() {
             return;
         }
 
-        char stat_content[1024] = {0};
-        read(stat_fd, stat_content, 1024);
+        char stat_content[STAT_CONTENT_BUF_SIZE] = {0};
+        read(stat_fd, stat_content, STAT_CONTENT_BUF_SIZE);
         char status;
         int matched = sscanf(stat_content, "%*s %*s %c", &status);
 
@@ -72,7 +77,7 @@ void ps0() {
             return;
         }
 
-        printf("%s %c %s", ent->d_name, status, proc_name);
+        printf("%5s %c %s", ent->d_name, status, proc_name);
         ent = readdir(proc_root);
 
         close(comm_fd);

@@ -8,7 +8,10 @@
  */
 
 void mv0(const char* oldpath, const char* newpath) {
-    rename(oldpath, newpath);
+    if (rename(oldpath, newpath) < 0) {
+        perror("Error en rename");
+        return;
+    }
 }
 
 int main(int argc, const char** argv) {

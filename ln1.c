@@ -1,5 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
+#include <stdio.h>
 
 
 /*
@@ -12,7 +13,10 @@ Repetir lo mismo, pero con un soft link. ¿Qué pasa ahora con el enlace? ¿Se p
  */
 
 void ln0(const char* from, const char* to) {
-    link(from, to);
+    if (link(from, to) < -1) {
+        perror("Error creando el link");
+        return;
+    }
 }
 
 int main(int argc, const char** argv) {

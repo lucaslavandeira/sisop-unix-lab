@@ -7,6 +7,7 @@
 void cat0(const char* file) {
     int fd = open(file, O_RDONLY);
     if (fd < 0) {
+        perror("Error abriendo archivo de entrada");
         return;
     }
 

@@ -27,7 +27,10 @@ void cat0(const char* file) {
 
     } while (bytes == BUF_SIZE);
 
-    close(fd);
+    if (close(fd) < 0) {
+        perror("Error cerrando el archivo de entrada");
+        return;
+    }
 }
 
 int main(int argc, char** argv) {

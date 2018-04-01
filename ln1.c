@@ -2,16 +2,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-
-/*
-¿Cuál es la diferencia entre un hard link y un soft link?
-
-Crear un hard link a un archivo, luego eliminar el archivo original ¿Qué pasa con el enlace? ¿Se perdieron los datos del archivo?
-
-Repetir lo mismo, pero con un soft link. ¿Qué pasa ahora con el enlace? ¿Se perdieron los datos esta vez?
-
- */
-
 void ln0(const char* from, const char* to) {
     if (link(from, to) < -1) {
         perror("Error creando el link");

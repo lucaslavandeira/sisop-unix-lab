@@ -1,6 +1,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>  // solo para formatear el filesize devuelto por stat
+#include <stdio.h>
 
 void stat0(const char* file) {
     struct stat s;

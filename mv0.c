@@ -2,11 +2,6 @@
 
 #include <stdio.h>
 
-/*
- * Pregunta: ¿se puede usar mv0 para renombrar archivos dentro del mismo directorio?
- * Sí, usar mv es la "forma unix" de renombrar archivos
- */
-
 void mv0(const char* oldpath, const char* newpath) {
     if (rename(oldpath, newpath) < 0) {
         perror("Error en rename");

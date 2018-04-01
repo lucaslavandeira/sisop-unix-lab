@@ -16,17 +16,12 @@ void ps0() {
     const char* proc = "/proc";
     DIR* proc_root = opendir(proc);
     if (!proc_root) {
-        perror("Error opening proc dir");
+        perror("Error abriendo el dir /proc");
         return;
     }
 
     struct dirent* ent = readdir(proc_root);
-    while (ent && !errno) {
-        if (ent->d_type != DT_DIR) {
-            ent = readdir(proc_root);
-            continue;
-        }
-
+    while (ent) {
         int is_pid = 1;
         int i = 0;
         char cur = ent->d_name[i++];
@@ -38,7 +33,7 @@ void ps0() {
             cur = ent->d_name[i++];
         }
 
-        if (!is_pid) {
+        if (!is_pid || ent->d_type != DT_DIR) {
             ent = readdir(proc_root);
             continue;
         }
@@ -48,44 +43,61 @@ void ps0() {
 
         int comm_fd = open(comm, O_RDONLY);
         if (comm_fd < 0) {
-            perror("Error opening process comm file");
+            perror("Error abriendo el comm file de un proceso");
             return;
         }
 
         char proc_name[PROC_NAME_BUF_SIZE] = {0};
-        read(comm_fd, proc_name, PROC_NAME_BUF_SIZE);
+        if (read(comm_fd, proc_name, PROC_NAME_BUF_SIZE) < 0) {
+            perror("Error leyendo el comm file de un proceso");
+        }
 
         char stat[PROC_PATH_BUF_SIZE] = {0};
         snprintf(stat, PROC_PATH_BUF_SIZE, "/proc/%s/stat", ent->d_name);
 
         int stat_fd = open(stat, O_RDONLY);
         if (stat_fd < 0) {
-            perror("Error opening process stat file");
-            close(comm_fd);
+            perror("Error abriendo el stat file de un proceso");
             return;
         }
 
         char stat_content[STAT_CONTENT_BUF_SIZE] = {0};
-        read(stat_fd, stat_content, STAT_CONTENT_BUF_SIZE);
+        if (read(stat_fd, stat_content, STAT_CONTENT_BUF_SIZE) < 0) {
+            perror("Error leyendo el stat file de un proceso");
+            return;
+        }
+
         char status;
         int matched = sscanf(stat_content, "%*s %*s %c", &status);
 
         if (matched != 1) {
-            printf("Error running sscanf on stat file\n");
-            close(comm_fd);
-            close(stat_fd);
+            perror("Error procesando el stat file con sscanf");
             return;
         }
 
         printf("%5s %c %s", ent->d_name, status, proc_name);
+
+        if (close(comm_fd) < 0) {
+            perror("Error cerrando comm file de un proceso");
+            return;
+        }
+
+
+        if (close(stat_fd) < 0) {
+            perror("Error cerrando stat file de un proceso");
+            return;
+        }
+
         ent = readdir(proc_root);
 
-        close(comm_fd);
-        close(stat_fd);
     }
 
     if (errno) {
-        perror("Error reading /proc dirent");
+        perror("Error leyendo entrada del dir /proc");
+    }
+
+    if (closedir(proc_root) < 0) {
+        perror("Error cerrando /proc");
     }
 }
 

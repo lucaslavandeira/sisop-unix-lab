@@ -4,7 +4,11 @@
 
 void stat0(const char* file) {
     struct stat s;
-    stat(file, &s);
+    if (stat(file, &s) < 0) {
+        perror("Error en stat del archivo de entrada");
+        return;
+    }
+
     static const char *msg =
             "Size: %d\n"
             "File: %s\n"

@@ -8,7 +8,7 @@ Padrón: 98042
 
 ### rm0
 
-```c
+```C
 #include <unistd.h>
 
 
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 
 ### cat0
 
-```
+```C
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -98,7 +98,7 @@ fue el encontrado para lograr permisos 0664 por fuera de usar `umask`
 
 ### stat0
 
-```
+```C
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
 
 ### rm1 (opcional)
 
-```
+```C
 #include <unistd.h>
 #include <stdio.h>
 
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
 
 ### ln0
 
-```
+```C
 #define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
 #include <stdio.h>
@@ -181,7 +181,7 @@ Por ejemplo, hacer un `cat` de un symlink roto va a devolver el error de archivo
 
 ### mv0
 
-```
+```C
 #define _POSIX_C_SOURCE 200809L
 
 #include <stdio.h>
@@ -205,7 +205,7 @@ Sí, usar `mv` es la "forma unix" de renombrar archivos
 
 ### cp0
 
-```
+```C
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -261,7 +261,7 @@ int main(int argc, const char** argv) {
 
 ### touch1 (opcional)
 
-```
+```C
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -289,7 +289,7 @@ int main(int argc, const char** argv) {
 
 ### ln1 (opcional)
 
-```
+```C
 #define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
 #include <stdio.h>
@@ -330,7 +330,7 @@ Si el archivo original era el único hard link al inodo de los datos, los datos 
 
 ### tee0
 
-```
+```C
 #define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
 #include <fcntl.h>
@@ -379,7 +379,7 @@ int main(int argc, char** argv) {
 
 ### ls0
 
-```
+```C
 #include <dirent.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -431,7 +431,7 @@ int main() {
 
 ### cp1
 
-```
+```C
 #define _POSIX_C_SOURCE 200112L
 #include <sys/stat.h>
 #include <unistd.h>
@@ -530,7 +530,7 @@ int main(int argc, char** argv) {
 
 ### ps0 (opcional)
 
-```
+```C
 #define _BSD_SOURCE
 #include <dirent.h>
 #include <stdio.h>
